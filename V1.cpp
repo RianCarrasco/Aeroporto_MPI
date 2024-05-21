@@ -139,7 +139,7 @@ struct Voo {
 
     // Imprime a tabela de mensagens do aeroporto atual
     printTabela(pista, rank);
-
+    //testeeeeee
     MPI_Type_free(&mpi_msg_type);
     MPI_Finalize();
     return 0;
