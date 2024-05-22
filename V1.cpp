@@ -120,7 +120,12 @@ int main(int argc, char** argv) {
 
     // Imprime a tabela de mensagens do aeroporto atual
     printTabela(pista, rank);
+<<<<<<< HEAD
 
+=======
+    //testeeeeee
+    MPI_Type_free(&mpi_msg_type);
+>>>>>>> 319de773860fe445cc7564e99bac502500e01061
     MPI_Finalize();
     return 0;
 }
