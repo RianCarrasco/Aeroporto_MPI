@@ -67,56 +67,37 @@ int main(int argc, char** argv) {
 
     vector<Voo> pousos;
     vector<Voo> decolagens = {
-        {1, rank, (rank + 1) % NUM_AEROPORTOS, 0, 3, false},
-        {2, rank, (rank + 2) % NUM_AEROPORTOS, 1, 4, false},
-        {3, rank, (rank + 3) % NUM_AEROPORTOS, 3, 1, false},
-        {0, rank, (rank + 1) % NUM_AEROPORTOS, 4, 2, false}
+        {11, rank, (rank + 1) % NUM_AEROPORTOS, 0, 3, false},
+        {12, rank, (rank + 2) % NUM_AEROPORTOS, 1, 4, false},
+        {13, rank, (rank + 3) % NUM_AEROPORTOS, 3, 1, false},
+        {14, rank, (rank + 1) % NUM_AEROPORTOS, 4, 2, false}
     };
-/*
-struct Voo {
-    int codigo;
-    int origem;
-    int destino;
-    int horario;
-    int tempo_voo;
-    bool is_pouso;
-};
-*/
 
     vector<Mensagem> mensagens;
 
     // Formando códigos de voos de acordo com a descrição
     int pouso_count = 1;
     int decolagem_count = 1;
-
+    string resultado;
     for (auto& voo : decolagens) {
         lc++;
-        
-        //voo.codigo = stoi(to_string(rank * 10) + to_string(decolagem_count));
-        voo.codigo = rank * 10 + decolagem_count;
+        resultado = to_string(rank * 10) + to_string(decolagem_count);
+        voo.codigo = atoi(resultado.c_str());
         decolagem_count++;
         Mensagem msg = { lc, voo };
         mensagens.push_back(msg);
     }
 
-    // Define o tipo MPI para Mensagem
-    MPI_Datatype mpi_msg_type;
-    MPI_Aint offsets[2] = { offsetof(Mensagem, lc), offsetof(Mensagem, voo) };
-    int lengths[2] = { 1, sizeof(Voo) };
-    MPI_Datatype types[2] = { MPI_INT, MPI_BYTE };
-    MPI_Type_create_struct(2, lengths, offsets, types, &mpi_msg_type);
-    MPI_Type_commit(&mpi_msg_type);
-
     // Enviar decolagens para os destinos
     for (auto& msg : mensagens) {
-        MPI_Send(&msg, 1, mpi_msg_type, msg.voo.destino, TAG, MPI_COMM_WORLD);
+        MPI_Send(&msg, sizeof(Mensagem), MPI_BYTE, msg.voo.destino, TAG, MPI_COMM_WORLD);
     }
 
     // Receber pousos de outros aeroportos
     for (int i = 0; i < size - 1; i++) {
         MPI_Status status;
         Mensagem msg;
-        MPI_Recv(&msg, 1, mpi_msg_type, MPI_ANY_SOURCE, TAG, MPI_COMM_WORLD, &status);
+        MPI_Recv(&msg, sizeof(Mensagem), MPI_BYTE, MPI_ANY_SOURCE, TAG, MPI_COMM_WORLD, &status);
         msg.voo.is_pouso = true;
         pousos.push_back(msg.voo);
         mensagens.push_back(msg);
@@ -139,10 +120,7 @@ struct Voo {
 
     // Imprime a tabela de mensagens do aeroporto atual
     printTabela(pista, rank);
-    //test
-    //tet 2
-    //tet 3  
-    MPI_Type_free(&mpi_msg_type);
+
     MPI_Finalize();
     return 0;
 }
