@@ -141,6 +141,7 @@ struct Voo {
     printTabela(pista, rank);
     //test
     //tet 2
+    //tet 3  
     MPI_Type_free(&mpi_msg_type);
     MPI_Finalize();
     return 0;
