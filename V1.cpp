@@ -57,9 +57,11 @@ void printTabela(const vector<Mensagem>& mensagens, int rank) {
 
 bool compareMensagens(const Mensagem& a, const Mensagem& b) {
     if (a.voo.horario == b.voo.horario) {
-        return a.voo.tempo_voo < b.voo.tempo_voo;
+        if(a.voo.tempo_voo > b.voo.tempo_voo)
+             return a.voo.tempo_voo;
+        return  b.voo.horario;
     }
-    return a.voo.horario < b.voo.horario;
+    return  a.voo.horario;
 }
 
 int main(int argc, char** argv) {
@@ -73,8 +75,8 @@ int main(int argc, char** argv) {
     vector<Voo> pousos;
     vector<Voo> decolagens = { // codigo, origem, destino, horario, tempo_voo, is_pouso
         {1, 0, 1, 0, 3, false},
-        {2, 1, 0, 0, 3, false},
-        {3, 1, 0, 0, 2, false}
+        {2, 1, 0, 0, 2, false},
+        {3, 1, 0, 0, 3, false}
     };
     vector<Mensagem> mensagens;
 
