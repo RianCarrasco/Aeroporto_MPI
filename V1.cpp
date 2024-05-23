@@ -60,9 +60,10 @@ void printTabela(const vector<Mensagem>& mensagens, int rank) {
 
 bool compareMensagens(const Mensagem& a, const Mensagem& b) {
     if (a.voo.horario == b.voo.horario) {
-        return a.voo.tempo_voo > b.voo.tempo_voo;
+        if(a.voo.tempo_voo < b.voo.is_pouso)
+            return b.voo.tempo_voo;
     }
-    return a.voo.horario < b.voo.horario;
+    return a.voo.horario;
 }
 
 int main(int argc, char** argv) {
@@ -155,16 +156,11 @@ int main(int argc, char** argv) {
     // Priorizar pousos e decolagens
 
 
-    sort(msg.begin(), msg.end(), compareMensagens);
+    sort(mensagens.begin(), mensagens.end(), compareMensagens);
 
     // Simular o uso da pista obedecendo as prioridades
     vector<Mensagem> pista;
     int current_time = 0;
-
-    for(auto& men: msg)
-    {
-        
-    }
 
     for (const auto& msg : mensagens) {
         if (msg.voo.horario > current_time) {
