@@ -15,7 +15,7 @@ const int ACK_TAG = 2;
 
 struct Voo
 {
-    string codigo;
+    int codigo;
     int origem;
     int destino;   // rank destino
     int horario;   // qual tempo lógico ele deve ir
@@ -65,12 +65,20 @@ void printTabela(const vector<Mensagem> &mensagens, int rank)
          << endl;
 }
 
-bool compareMensagens(const Mensagem &a, const Mensagem &b)
+bool compareMensagens(Mensagem &a, Mensagem &b)
 {
     if (a.voo.horario == b.voo.horario)
-        return a.voo.tempo_voo > b.voo.tempo_voo ? a.voo.tempo_voo : b.voo.horario;
-
-    return a.voo.horario;
+        if(a.voo.tempo_voo > b.voo.tempo_voo)
+        {
+            b.voo.tempo_voo++;
+            return a.voo.tempo_voo;
+        }
+        else
+        {
+            a.voo.tempo_voo++;
+            return b.voo.tempo_voo;
+        }
+    return a.voo.tempo_voo;
 }
 
 vector<Voo> getVoos()
@@ -82,9 +90,9 @@ vector<Voo> getVoos()
 
     if (quantidade < 0)
         return {// codigo, origem, destino, horario, tempo_voo, is_pouso
-                {'1', 0, 1, 0, 3, false},
-                {'2', 1, 0, 0, 2, false},
-                {'3', 1, 0, 0, 3, false}};
+                {1, 0, 1, 0, 3, false},
+                {2, 1, 0, 0, 2, false},
+                {3, 1, 0, 0, 3, false}};
 
     for (int i = 0; i < quantidade; ++i)
     {
@@ -140,8 +148,9 @@ int main(int argc, char **argv)
         if (voo.origem == rank)
         {
             lc++;
-            //resultado = to_string(((rank + 1) * 10) + decolagem_count); // Primeiro número é a origem, segundo é a quantidade de decolagens
-            voo.codigo = to_string(rank + 1) + to_string(decolagem_count);
+            resultado = to_string(((rank + 1) * 10) + decolagem_count); // Primeiro número é a origem, segundo é a quantidade de decolagens
+             voo.codigo = atoi(resultado.c_str());
+            //voo.codigo = to_string(rank + 1) + to_string(decolagem_count);
             decolagem_count++;
 
             Mensagem msg = {lc, voo};
