@@ -6,7 +6,8 @@
 #include <cstdlib>  //para usar o system
 #include <cstring> // Para usar memcpy
 
-#define TAG 5000
+#define TAGVOO 5000
+#define TAGCONF 4000
 
 using namespace std;
 
@@ -59,8 +60,9 @@ vector<Voo> getVoos(int *log)
     cout << "Deseja mostrar os LOGS que ocorrem ao decorrer do programa? -1 = sim, 0 = não" << endl;
     cin >> *log;
 
-    if (quantidade < 0){
-        return {// codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
+    if (quantidade < 0){        //entrada para testes, escolha o return e coloque como primeiro return para testar
+        return {    //entrada para 3 processos
+            // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
             {"AA101", 0, 1, 0, 2, 2},
             {"EE505", 0, 1, 4, 5, 9},
             {"BB202", 0, 1, 1, 3, 4},
@@ -79,7 +81,72 @@ vector<Voo> getVoos(int *log)
             {"NN444", 2, 1, 3, 5, 8}};
 
         //outros exemplos
-        return {// codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
+        return {    //entrada para 6 processos
+            // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
+            {"AA101", 0, 1, 0, 2, 2},
+            {"AB102", 0, 2, 1, 3, 4},
+            {"AC103", 0, 3, 2, 3, 5},
+            {"AD104", 0, 4, 3, 2, 5},
+            {"AE105", 0, 5, 4, 1, 5},
+
+            {"BA201", 1, 0, 1, 2, 3},
+            {"BB202", 1, 2, 2, 2, 4},
+            {"BC203", 1, 3, 3, 3, 6},
+            {"BD204", 1, 4, 4, 1, 5},
+            {"BE205", 1, 5, 0, 5, 5},
+
+            {"CA301", 2, 0, 2, 1, 3},
+            {"CB302", 2, 1, 0, 3, 3},
+            {"CC303", 2, 3, 3, 2, 5},
+            {"CD304", 2, 4, 4, 3, 7},
+            {"CE305", 2, 5, 5, 1, 6},
+
+            {"DA401", 3, 0, 3, 2, 5},
+            {"DB402", 3, 1, 2, 1, 3},
+            {"DC403", 3, 2, 3, 2, 5},
+            {"DD404", 3, 4, 4, 3, 7},
+            {"DE405", 3, 5, 5, 1, 6},
+
+            {"EA501", 4, 0, 4, 1, 5},
+            {"EB502", 4, 1, 3, 1, 4},
+            {"EC503", 4, 2, 4, 2, 6},
+            {"ED504", 4, 3, 0, 3, 3},
+            {"EE505", 4, 5, 2, 2, 7},
+
+            {"FA601", 5, 0, 5, 1, 6},
+            {"FB602", 5, 1, 4, 1, 5},
+            {"FC603", 5, 2, 5, 2, 7},
+            {"FD604", 5, 3, 1, 2, 3},
+            {"FE605", 5, 4, 3, 1, 4}
+        };
+
+        return {//entrada para 4 processos
+            // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
+            {"AA101", 0, 1, 0, 2, 2},
+            {"EE505", 0, 1, 4, 5, 9},
+            {"BB202", 0, 1, 1, 3, 4},
+            {"DD404", 0, 2, 3, 4, 7},
+            {"CC303", 0, 2, 2, 3, 5},
+
+            {"JJ010", 1, 0, 4, 5, 9},
+            {"FF606", 1, 0, 0, 2, 2},
+            {"HH808", 1, 2, 2, 3, 5},
+            {"GG707", 1, 2, 1, 3, 4},
+            {"II909", 1, 0, 3, 4, 7},
+
+            {"KK111", 2, 0, 0, 3, 3},
+            {"MM333", 2, 1, 2, 4, 6},
+            {"LL222", 2, 1, 1, 2, 3},
+            {"NN444", 2, 1, 3, 5, 8},
+
+            {"PP555", 3, 0, 3, 4, 7},
+            {"QQ666", 3, 1, 0, 2, 2},
+            {"RR777", 3, 1, 2, 4, 6},
+            {"SS888", 3, 2, 1, 3, 4},
+            {"TT999", 3, 2, 2, 3, 5}};
+
+        return {//entrada simples para 3 processos
+            // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
             {"AA101", 0, 1, 0, 2, 2},
             {"BB202", 0, 1, 1, 3, 4},  
             {"CC303", 0, 2, 2, 3, 5},
@@ -218,7 +285,7 @@ void receber_confirmacoes(vector<Voo> &decolagens, int clock){
         {
             int confirmacao;
             cout << "esperando confirmação ..." << endl;
-            MPI_Recv(&confirmacao, 1, MPI_INT, voo.destino, TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&confirmacao, 1, MPI_INT, voo.destino, TAGCONF, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
             if (confirmacao)    //voo entregue com sucesso
                 cout << "Voo chegou no outro aeroporto com sucesso" << endl;
@@ -234,7 +301,7 @@ void envios(vector<Voo> &decolagens, int clock){
     for(Voo voo : decolagens)   //mais de um voo para chegar nesse horario
         if (voo.chegada == clock){   //enviando nesse horario de chegada
             cout<<"Decolando voo..."<<endl;
-            MPI_Send(&voo, sizeof(Voo),MPI_BYTE, voo.destino, TAG, MPI_COMM_WORLD);
+            MPI_Send(&voo, sizeof(Voo),MPI_BYTE, voo.destino, TAGVOO, MPI_COMM_WORLD);
         }
 }
 
@@ -264,7 +331,7 @@ void trafego(vector<Voo> &pousos, vector<Voo> &decolagens, vector<int> aterrisag
         for (int i = 0; i < qntChegada; i++)
         {
             cout << "Recebendo gente" <<endl;
-            MPI_Irecv(&voo_aterrisando, sizeof(Voo), MPI_BYTE, MPI_ANY_SOURCE, TAG, MPI_COMM_WORLD, &request_chegada);
+            MPI_Irecv(&voo_aterrisando, sizeof(Voo), MPI_BYTE, MPI_ANY_SOURCE, TAGVOO, MPI_COMM_WORLD, &request_chegada);
 
             if(!i)   //so fazer os envios uma vez
                 envios(decolagens, clock);
@@ -291,7 +358,7 @@ void trafego(vector<Voo> &pousos, vector<Voo> &decolagens, vector<int> aterrisag
                 */ 
 
                 int verdadeiro=1;
-                MPI_Isend(&verdadeiro, 1, MPI_INT, bestVoo.origem, TAG, MPI_COMM_WORLD, &request_conf_true);
+                MPI_Isend(&verdadeiro, 1, MPI_INT, bestVoo.origem, TAGCONF, MPI_COMM_WORLD, &request_conf_true);
 
                 voosanalisados.erase(voosanalisados.begin() + pos); //mensagem de confirmação já enviada
                 aterrisagem.erase(aterrisagem.begin()); //chegou com sucesso, dropa sua chegada
@@ -304,20 +371,20 @@ void trafego(vector<Voo> &pousos, vector<Voo> &decolagens, vector<int> aterrisag
                 */
             }
 
-            receber_confirmacoes(decolagens, clock);
-
-            MPI_Wait(&request_conf_true, MPI_STATUS_IGNORE);
-
             for (Voo voo : voosanalisados)  //Respondendo as outras máquinas
             {
                 int falso = 0;
                 cout << "enviando false para maquina " << voo.origem <<endl;
-                MPI_Isend(&falso, 1, MPI_INT, voo.origem, TAG, MPI_COMM_WORLD, &request_conf_false);
+                MPI_Isend(&falso, 1, MPI_INT, voo.origem, TAGCONF, MPI_COMM_WORLD, &request_conf_false);
                 aterrisagem[0]++; 
                 sort(aterrisagem.begin(),aterrisagem.end());
 
-                MPI_Wait(&request_conf_false, MPI_STATUS_IGNORE);
+                //MPI_Wait(&request_conf_false, MPI_STATUS_IGNORE);
             }
+
+            receber_confirmacoes(decolagens, clock);
+
+            //MPI_Wait(&request_conf_true, MPI_STATUS_IGNORE);
 
             /*
             // correções se existe voo para partir agora
@@ -328,7 +395,7 @@ void trafego(vector<Voo> &pousos, vector<Voo> &decolagens, vector<int> aterrisag
                 {
                     decolagens[i].horario++;
                     //acrescentar_ida(decolagens, i);
-                    decolagens[i].chegada++;    //preciso avisar que vai chegar com atrasa (atualizar chegada no outro processo)
+                    decolagens[i].chegada++;    //preciso avisar que vai chegar com atraso (atualizar chegada no outro processo)
                     break;
                 }
                 i++;
@@ -386,15 +453,15 @@ int main(int argc, char **argv)
 
             for (const Voo &voo : Blocos_voo[i])
             {
-                MPI_Send(&voo, sizeof(Voo), MPI_BYTE, i, TAG, MPI_COMM_WORLD);
+                MPI_Send(&voo, sizeof(Voo), MPI_BYTE, i, TAGVOO, MPI_COMM_WORLD);
             }
             Voo voo_paia = {"-1", -1, -1, -1, -1, -1};
-            MPI_Send(&voo_paia, sizeof(Voo), MPI_BYTE, i, TAG, MPI_COMM_WORLD);
+            MPI_Send(&voo_paia, sizeof(Voo), MPI_BYTE, i, TAGVOO, MPI_COMM_WORLD);
 
             int tam = Matriz_aterrissagem[i].size();
             
-            MPI_Send(&tam, 1, MPI_INT, i, TAG, MPI_COMM_WORLD);
-            MPI_Send(Matriz_aterrissagem[i].data(), tam, MPI_INT, i, TAG, MPI_COMM_WORLD);
+            MPI_Send(&tam, 1, MPI_INT, i, TAGVOO, MPI_COMM_WORLD);
+            MPI_Send(Matriz_aterrissagem[i].data(), tam, MPI_INT, i, TAGVOO, MPI_COMM_WORLD);
         }
 
         sort(Blocos_voo[0].begin(), Blocos_voo[0].end(), [](const Voo& a, const Voo& b) {
@@ -409,7 +476,7 @@ int main(int argc, char **argv)
         while (true)
         {
             Voo voo;
-            MPI_Recv(&voo, sizeof(Voo), MPI_BYTE, 0, TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+            MPI_Recv(&voo, sizeof(Voo), MPI_BYTE, 0, TAGVOO, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             if (voo.origem != -1)
             {
                 decolagens.push_back(voo);
@@ -417,11 +484,11 @@ int main(int argc, char **argv)
             else
             {
                 int tam;
-                MPI_Recv(&tam, 1, MPI_INT, 0, TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  // Receber tamanho
+                MPI_Recv(&tam, 1, MPI_INT, 0, TAGVOO, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  // Receber tamanho
 
                 aterrisagem.resize(tam);
 
-                MPI_Recv(aterrisagem.data(), tam, MPI_INT, 0, TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  // Receber dados
+                MPI_Recv(aterrisagem.data(), tam, MPI_INT, 0, TAGVOO, MPI_COMM_WORLD, MPI_STATUS_IGNORE);  // Receber dados
                 break;
             }
         }
