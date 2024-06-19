@@ -18,7 +18,9 @@ struct Voo
     int destino;   // rank destino
     int horario;   // horario marcado de saída
     int tempo_voo; // tempo que a mensagem ficará no ar
-    int chegada;   // horário marcado de chegada desse voo
+    int chegada;
+    int atraso = 0;
+   // horário marcado de chegada desse voo
 };
 
 void printTabela(const vector<Voo> Pousos, const vector<Voo> Decolagens,int rank)
@@ -51,6 +53,8 @@ void printTabela(const vector<Voo> Pousos, const vector<Voo> Decolagens,int rank
          << endl;
 }
 
+
+
 vector<Voo> getVoos(int *log)
 {
     vector<Voo> decolagens;
@@ -60,28 +64,7 @@ vector<Voo> getVoos(int *log)
     cout << "Deseja mostrar os LOGS que ocorrem ao decorrer do programa? -1 = sim, 0 = não" << endl;
     cin >> *log;
 
-    if (quantidade < 0){        //entrada para testes, escolha o return e coloque como primeiro return para testar
-        return {    //entrada para 3 processos
-            // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
-            {"AA101", 0, 1, 0, 2, 2},
-            {"EE505", 0, 1, 4, 5, 9},
-            {"BB202", 0, 1, 1, 3, 4},
-            {"DD404", 0, 2, 3, 4, 7},
-            {"CC303", 0, 2, 2, 3, 5},
-
-            {"JJ010", 1, 0, 4, 5, 9},
-            {"FF606", 1, 0, 0, 2, 2},
-            {"HH808", 1, 2, 2, 3, 5},
-            {"GG707", 1, 2, 1, 3, 4},
-            {"II909", 1, 0, 3, 4, 7},
-            
-            {"KK111", 2, 0, 0, 3, 3},
-            {"MM333", 2, 1, 2, 4, 6},
-            {"LL222", 2, 1, 1, 2, 3},
-            {"NN444", 2, 1, 3, 5, 8}};
-
-        //outros exemplos
-        return {    //entrada para 6 processos
+    if (quantidade < 0){        return {    //entrada para 6 processos
             // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
             {"AA101", 0, 1, 0, 2, 2},
             {"AB102", 0, 2, 1, 3, 4},
@@ -118,7 +101,28 @@ vector<Voo> getVoos(int *log)
             {"FC603", 5, 2, 5, 2, 7},
             {"FD604", 5, 3, 1, 2, 3},
             {"FE605", 5, 4, 3, 1, 4}
-        };
+        };        //entrada para testes, escolha o return e coloque como primeiro return para testar
+        return {    //entrada para 3 processos
+            // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
+            {"AA101", 0, 1, 0, 2, 2},
+            {"EE505", 0, 1, 4, 5, 9},
+            {"BB202", 0, 1, 1, 3, 4},
+            {"DD404", 0, 2, 3, 4, 7},
+            {"CC303", 0, 2, 2, 3, 5},
+
+            {"JJ010", 1, 0, 4, 5, 9},
+            {"FF606", 1, 0, 0, 2, 2},
+            {"HH808", 1, 2, 2, 3, 5},
+            {"GG707", 1, 2, 1, 3, 4},
+            {"II909", 1, 0, 3, 4, 7},
+            
+            {"KK111", 2, 0, 0, 3, 3},
+            {"MM333", 2, 1, 2, 4, 6},
+            {"LL222", 2, 1, 1, 2, 3},
+            {"NN444", 2, 1, 3, 5, 8}};
+
+        //outros exemplos
+
 
         return {//entrada para 4 processos
             // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
@@ -181,7 +185,7 @@ vector<Voo> getVoos(int *log)
 
     for(Voo &voo : decolagens){
         voo.chegada = voo.horario + voo.tempo_voo;
-        snprintf(voo.codigo, sizeof(voo.codigo), "%d-%d", voo.origem + 1, codigos[voo.origem]++);
+        snprintf(voo.codigo, sizeof(voo.codigo), "%d%d", voo.origem + 1, codigos[voo.origem]++);
     }
 
     sort(decolagens.begin(), decolagens.end(), [](const Voo& a, const Voo& b) {
@@ -252,12 +256,13 @@ void acrescentar_ida(vector<Voo> &voos, int indice = 0)
         return;
     }
 
-    if (voos[indice].horario == voos[indice + 1].horario)
+    if (voos[indice].horario >= voos[indice + 1].horario)
     {
         voos[indice + 1].horario++;
+        voos[indice + 1].atraso++;
     }
 
-    if (indice + 2 < voos.size() && voos[indice + 1].horario == voos[indice + 2].horario)
+    if (indice + 2 <= voos.size() && voos[indice + 1].horario >= voos[indice + 2].horario)
     {
         acrescentar_ida(voos, indice + 1);
     }
@@ -333,6 +338,7 @@ void trafego(vector<Voo> &pousos, vector<Voo> &decolagens, vector<int> aterrisag
             cout << "Recebendo gente" <<endl;
             MPI_Irecv(&voo_aterrisando, sizeof(Voo), MPI_BYTE, MPI_ANY_SOURCE, TAGVOO, MPI_COMM_WORLD, &request_chegada);
 
+
             if(!i)   //so fazer os envios uma vez
                 envios(decolagens, clock);
 
@@ -381,29 +387,28 @@ void trafego(vector<Voo> &pousos, vector<Voo> &decolagens, vector<int> aterrisag
 
                 //MPI_Wait(&request_conf_false, MPI_STATUS_IGNORE);
             }
-
+    
             receber_confirmacoes(decolagens, clock);
 
             //MPI_Wait(&request_conf_true, MPI_STATUS_IGNORE);
 
-            /*
+            
             // correções se existe voo para partir agora
-            int i = 0;
-            for (Voo voo : decolagens)
+            for(Voo &vooo : decolagens)
             {
-                if (voo.horario == clock)   //alguem irá partir nesse horário?
+                if(vooo.horario == clock)
                 {
-                    decolagens[i].horario++;
-                    //acrescentar_ida(decolagens, i);
-                    decolagens[i].chegada++;    //preciso avisar que vai chegar com atraso (atualizar chegada no outro processo)
-                    break;
+                    vooo.horario++;
+                    acrescentar_ida(decolagens, 0);
                 }
-                i++;
             }
-            */
+            //acrescentar_ida(decolagens, 0);
+
+            
         }
         else    //se qntChegada <= 0 envios ainda não foram feitos nesse clock
         {
+            acrescentar_ida(decolagens, 0);
             envios(decolagens, clock);
             receber_confirmacoes(decolagens, clock);
         }
