@@ -58,108 +58,72 @@ vector<Voo> getVoos(int *log)
 {
     vector<Voo> decolagens;
     int quantidade;
-    cout << "Digite a quantidade de decolagens (-1 para decolagens predefinidas (feito para 3 processos)): ";
+    cout << "Bem-vindo ao nosso sistema de gerenciamento de tráfego aéreo e tratamento de colisões em aeroportos! Aqui, garantimos a segurança e eficiência dos voos ajustando dinamicamente os horários para evitar conflitos e colisões." << endl;
+    cout << "Todos os voos serão inicialmente fornecidos na máquina 0 e distribuídos entre as outras máquinas do sistema, otimizando o fluxo de tráfego aéreo de forma eficaz e escalável. Aproveite a experiência e voe tranquilo!" << endl << endl;
+    
+    cout << "Digite a quantidade de decolagens em todos os aeroportos (ou -1 para decolagens predefinidas para 3 processos): ";
     cin >> quantidade;
-    cout << "Deseja mostrar os LOGS que ocorrem ao decorrer do programa? -1 = sim, 0 = não" << endl;
+    cout << "Deseja mostrar os LOGS que ocorrem ao decorrer do programa? -1 = sim, 0 = mostrar apenas o resultado final" << endl;
     cin >> *log;
 
     if (quantidade < 0){
         //entrada para testes, escolha o return e coloque como primeiro return para testar
         return {    //entrada para 3 processos
             // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
-            {"AA101", 0, 1, 0, 2, 2},
-            {"EE505", 0, 1, 4, 5, 9},
-            {"BB202", 0, 1, 1, 3, 4},
-            {"DD404", 0, 2, 3, 4, 7},
-            {"CC303", 0, 2, 2, 3, 5},
+            {"11", 0, 1, 0, 2, 2},
+            {"12", 0, 1, 4, 5, 9},
+            {"13", 0, 1, 1, 3, 4},
+            {"14", 0, 2, 3, 4, 7},
+            {"15", 0, 2, 2, 3, 5},
 
-            {"JJ010", 1, 0, 4, 5, 9},
-            {"FF606", 1, 0, 0, 2, 2},
-            {"HH808", 1, 2, 2, 3, 5},
-            {"GG707", 1, 2, 1, 3, 4},
-            {"II909", 1, 0, 3, 4, 7},
+            {"21", 1, 0, 4, 5, 9},
+            {"22", 1, 0, 0, 2, 2},
+            {"23", 1, 2, 2, 3, 5},
+            {"24", 1, 2, 1, 3, 4},
+            {"25", 1, 0, 3, 4, 7},
             
-            {"KK111", 2, 0, 0, 3, 3},
-            {"MM333", 2, 1, 2, 4, 6},
-            {"LL222", 2, 1, 1, 2, 3},
-            {"NN444", 2, 1, 3, 5, 8}};
+            {"31", 2, 0, 0, 3, 3},
+            {"32", 2, 1, 2, 4, 6},
+            {"33", 2, 1, 1, 2, 3},
+            {"34", 2, 1, 3, 5, 8}};
 
         //outros exemplos
         return {//entrada simples para 3 processos
             // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
-            {"AA101", 0, 1, 0, 2, 2},
-            {"BB202", 0, 1, 1, 3, 4},  
-            {"CC303", 0, 2, 2, 3, 5},
+            {"11", 0, 1, 0, 2, 2},
+            {"12", 0, 1, 1, 3, 4},  
+            {"13", 0, 2, 2, 3, 5},
 
-            {"DD404", 1, 2, 1, 4, 5},
-            {"EE505", 1, 0, 2, 6, 8},
+            {"21", 1, 2, 1, 4, 5},
+            {"22", 1, 0, 2, 6, 8},
 
-            {"FF606", 2, 0, 5, 1, 6},
-            {"GG707", 2, 1, 7, 1, 8}};
+            {"31", 2, 0, 5, 1, 6},
+            {"32", 2, 1, 7, 1, 8}};
 
         return {//entrada para 4 processos
             // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
-            {"AA101", 0, 1, 0, 2, 2},
-            {"EE505", 0, 1, 4, 5, 9},
-            {"BB202", 0, 1, 1, 3, 4},
-            {"DD404", 0, 2, 3, 4, 7},
-            {"CC303", 0, 2, 2, 3, 5},
+            {"11", 0, 1, 0, 2, 2},
+            {"12", 0, 1, 4, 5, 9},
+            {"13", 0, 1, 1, 3, 4},
+            {"14", 0, 2, 3, 4, 7},
+            {"15", 0, 2, 2, 3, 5},
 
-            {"JJ010", 1, 0, 4, 5, 9},
-            {"FF606", 1, 0, 0, 2, 2},
-            {"HH808", 1, 2, 2, 3, 5},
-            {"GG707", 1, 2, 1, 3, 4},
-            {"II909", 1, 0, 3, 4, 7},
+            {"21", 1, 0, 4, 5, 9},
+            {"22", 1, 0, 0, 2, 2},
+            {"23", 1, 2, 2, 3, 5},
+            {"24", 1, 2, 1, 3, 4},
+            {"25", 1, 0, 3, 4, 7},
 
-            {"KK111", 2, 0, 0, 3, 3},
-            {"MM333", 2, 1, 2, 4, 6},
-            {"LL222", 2, 1, 1, 2, 3},
-            {"NN444", 2, 1, 3, 5, 8},
+            {"31", 2, 0, 0, 3, 3},
+            {"32", 2, 1, 2, 4, 6},
+            {"33", 2, 1, 1, 2, 3},
+            {"34", 2, 1, 3, 5, 8},
 
-            {"PP555", 3, 0, 3, 4, 7},
-            {"QQ666", 3, 1, 0, 2, 2},
-            {"RR777", 3, 1, 2, 4, 6},
-            {"SS888", 3, 2, 1, 3, 4},
-            {"TT999", 3, 2, 2, 3, 5}};
-              
-        return {    //entrada para 6 processos
-            // codigo, origem, destino, horario, tempo_voo, horario marcado de chegada
-            {"AA101", 0, 1, 0, 2, 2},
-            {"AB102", 0, 2, 1, 3, 4},
-            {"AC103", 0, 3, 2, 3, 5},
-            {"AD104", 0, 4, 3, 2, 5},
-            {"AE105", 0, 5, 4, 1, 5},
-
-            {"BA201", 1, 0, 1, 2, 3},
-            {"BB202", 1, 2, 2, 2, 4},
-            {"BC203", 1, 3, 3, 3, 6},
-            {"BD204", 1, 4, 4, 1, 5},
-            {"BE205", 1, 5, 0, 5, 5},
-
-            {"CA301", 2, 0, 2, 1, 3},
-            {"CB302", 2, 1, 0, 3, 3},
-            {"CC303", 2, 3, 3, 2, 5},
-            {"CD304", 2, 4, 4, 3, 7},
-            {"CE305", 2, 5, 5, 1, 6},
-
-            {"DA401", 3, 0, 3, 2, 5},
-            {"DB402", 3, 1, 2, 1, 3},
-            {"DC403", 3, 2, 3, 2, 5},
-            {"DD404", 3, 4, 4, 3, 7},
-            {"DE405", 3, 5, 5, 1, 6},
-
-            {"EA501", 4, 0, 4, 1, 5},
-            {"EB502", 4, 1, 3, 1, 4},
-            {"EC503", 4, 2, 4, 2, 6},
-            {"ED504", 4, 3, 0, 3, 3},
-            {"EE505", 4, 5, 2, 2, 7},
-
-            {"FA601", 5, 0, 5, 1, 6},
-            {"FB602", 5, 1, 4, 1, 5},
-            {"FC603", 5, 2, 5, 2, 7},
-            {"FD604", 5, 3, 1, 2, 3},
-            {"FE605", 5, 4, 3, 1, 4}
-        };
+            {"41", 3, 0, 3, 4, 7},
+            {"42", 3, 1, 0, 2, 2},
+            {"43", 3, 1, 2, 4, 6},
+            {"44", 3, 2, 1, 3, 4},
+            {"45", 3, 2, 2, 3, 5}};
     }
 
     for (int i = 0; i < quantidade; ++i)
