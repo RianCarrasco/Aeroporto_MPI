@@ -9,6 +9,15 @@
 #define TAGVOO 5000
 #define TAGCONF 4000
 
+/**
+ *
+ * @author Vinicius Stefanes Mendes & Rian Carrasco Gonçalves
+ * @email <vinicius.mendes082@academico.ufgd.edu.br>
+ * @email <rian.goncalves064@academico.ufgd.edu.br>
+ * @date  21/06/2024
+ *
+ */
+
 using namespace std;
 
 struct Voo
@@ -23,7 +32,7 @@ struct Voo
 };
 
 //Função responsável por mostrar na tela o trafego do aeroporto
-void printTabela(const vector<Voo> Pousos, const vector<Voo> Decolagens,int rank)
+void printTabela( const vector<Voo> Pousos, const vector<Voo> Decolagens,int rank)
 {
     cout << endl << "Aeroporto " << rank+1 << endl << endl;
 
